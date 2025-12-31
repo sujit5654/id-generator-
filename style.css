@@ -1,0 +1,453 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    gap: 40px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+/* Form Section Styles */
+.form-section {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    width: 400px;
+}
+
+.form-section h1 {
+    text-align: center;
+    color: #00a8cc;
+    margin-bottom: 25px;
+    font-size: 24px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #333;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.3s;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #00a8cc;
+}
+
+.form-group input[type="file"] {
+    padding: 8px;
+    background: #f5f5f5;
+}
+
+.button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.button-group button {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.button-group button:first-child {
+    background: linear-gradient(135deg, #00a8cc, #0091b5);
+    color: white;
+}
+
+.button-group button:nth-child(2) {
+    background: linear-gradient(135deg, #00a8cc, #0091b5);
+    color: white;
+}
+
+.button-group button:nth-child(3) {
+    background: linear-gradient(135deg, #28a745, #218838);
+    color: white;
+}
+
+.button-group button:nth-child(4) {
+    background: linear-gradient(135deg, #6c757d, #5a6268);
+    color: white;
+}
+
+.button-group button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Drag Mode Styles */
+.drag-mode-active {
+    cursor: move !important;
+}
+
+.draggable-element {
+    transition: box-shadow 0.3s;
+}
+
+.drag-mode-active .draggable-element {
+    cursor: move;
+    outline: 2px dashed rgba(0, 168, 204, 0.5);
+    outline-offset: 2px;
+}
+
+.draggable-element.dragging {
+    opacity: 0.7;
+    z-index: 1000 !important;
+    outline: 2px solid #00a8cc;
+}
+
+.drag-mode-active .draggable-element:hover {
+    outline: 2px solid #00a8cc;
+    background: rgba(0, 168, 204, 0.1);
+}
+
+/* Preview Section Styles */
+.preview-section {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.preview-section h2 {
+    text-align: center;
+    color: #00a8cc;
+    margin-bottom: 20px;
+}
+
+/* Cropper Modal Styles */
+.cropper-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #000000;
+    z-index: 99999;
+    justify-content: center;
+    align-items: center;
+    overflow: auto;
+}
+
+.cropper-modal.active {
+    display: flex;
+}
+
+.cropper-container-box {
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 15px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 90vh;
+    overflow: auto;
+    position: relative;
+    z-index: 100000;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+.cropper-container-box h3 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #00a8cc;
+    font-size: 20px;
+}
+
+.cropper-wrapper {
+    width: 100%;
+    height: 400px;
+    background: #333333;
+    overflow: hidden;
+    margin-bottom: 20px;
+    border-radius: 8px;
+}
+
+.cropper-wrapper img {
+    max-width: 100%;
+    display: block;
+}
+
+.cropper-buttons {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+    justify-content: center;
+}
+
+.cropper-buttons button {
+    padding: 12px 30px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.cropper-buttons button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.cropper-buttons button:first-child {
+    background: linear-gradient(135deg, #28a745, #218838);
+    color: white;
+}
+
+.cropper-buttons button:last-child {
+    background: linear-gradient(135deg, #dc3545, #c82333);
+    color: white;
+}
+
+/* ID Card Styles - Using Template Image */
+.id-card {
+    width: 400px;
+    height: 650px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+/* Template Background Image */
+.template-bg {
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+
+/* Photo Section - Positioned on template */
+.photo-section {
+    position: absolute;
+    top: 194px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 139px;
+    height: 151px;
+    z-index: 2;
+    overflow: hidden;
+    pointer-events: auto;
+    cursor: default;
+}
+
+.drag-mode-active .photo-section {
+    cursor: move !important;
+}
+
+.photo-section img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
+    pointer-events: none;
+}
+
+/* Name Section */
+.name-section {
+    position: absolute;
+    top: 362px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    z-index: 2;
+    pointer-events: auto;
+    cursor: default;
+    white-space: nowrap;
+}
+
+.drag-mode-active .name-section {
+    cursor: move !important;
+}
+
+.name-section h2 {
+    font-size: 32px;
+    font-weight: 900;
+    color: #004d73;
+    letter-spacing: 5px;
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+}
+
+/* Designation Section */
+.designation-section {
+    position: absolute;
+    top: 407px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    z-index: 2;
+    pointer-events: auto;
+    cursor: default;
+    white-space: nowrap;
+}
+
+.drag-mode-active .designation-section {
+    cursor: move !important;
+}
+
+.designation-section span {
+    font-size: 17px;
+    font-style: normal;
+    color: #000;
+    font-weight: 400;
+    font-family: 'Roboto', sans-serif;
+}
+
+.designation-section .dash {
+    color: #004d73;
+    font-size: 17px;
+    font-weight: 700;
+    margin: 0 8px;
+}
+
+/* Details Section - Each value positioned individually */
+.details-section {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.detail-row {
+    position: absolute;
+    font-size: 15px;
+    pointer-events: auto;
+    cursor: default;
+    white-space: nowrap;
+}
+
+.drag-mode-active .detail-row {
+    cursor: move !important;
+}
+
+/* ID Number - positioned after "ID No :" */
+#idRow {
+    top: 450px;
+    left: 166px;
+}
+
+/* Phone - positioned after "Phone :" */
+#phoneRow {
+    top: 474px;
+    left: 164px;
+}
+
+/* Blood - positioned after "Blood :" */
+#bloodRow {
+    top: 500px;
+    left: 164px;
+}
+
+/* Email - positioned after "E-mail :" */
+#emailRow {
+    top: 519px;
+    left: 164px;
+}
+
+.detail-row .value {
+    color: #000;
+    font-weight: 400;
+    font-size: 15px;
+    font-family: 'Roboto', sans-serif;
+    pointer-events: none;
+}
+
+/* Barcode Section */
+.barcode-section {
+    position: absolute;
+    bottom: 48px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+    pointer-events: auto;
+    cursor: default;
+}
+
+.drag-mode-active .barcode-section {
+    cursor: move !important;
+}
+
+.barcode-section svg {
+    width: 280px;
+    height: 50px;
+    pointer-events: none;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .container {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .form-section {
+        width: 100%;
+        max-width: 400px;
+    }
+}
+
+/* Print Styles */
+@media print {
+    body {
+        background: white;
+        padding: 0;
+    }
+    
+    .form-section, .preview-section h2 {
+        display: none;
+    }
+    
+    .preview-section {
+        box-shadow: none;
+        padding: 0;
+    }
+    
+    .id-card {
+        box-shadow: none;
+        margin: 0 auto;
+    }
+}
