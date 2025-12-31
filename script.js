@@ -10,11 +10,13 @@ let offsetY = 0;
 // Store template as base64 for download
 let templateBase64 = null;
 
-// Initialize barcode on page load
+// Initialize QR code on page load
 document.addEventListener('DOMContentLoaded', function() {
-    generateBarcode('ID-CARD-GENERATOR');
+    generateQRCode('ID-CARD-GENERATOR');
     initializeDragSystem();
     setupTemplateUpload();
+    setupPhotoUpload();
+    setupRealTimeUpdates();
 });
 
 // Setup template upload handler
@@ -34,7 +36,8 @@ function setupTemplateUpload() {
 }
 
 // Handle photo upload - Open Cropper
-document.getElementById('photoInput').addEventListener('change', function(e) {
+function setupPhotoUpload() {
+    document.getElementById('photoInput').addEventListener('change', function(e) {
     const file = e.target.files[0];
     if (file) {
         const reader = new FileReader();
@@ -69,6 +72,7 @@ document.getElementById('photoInput').addEventListener('change', function(e) {
         reader.readAsDataURL(file);
     }
 });
+}
 
 // Apply cropped image
 function applyCrop() {
@@ -112,7 +116,7 @@ function generateCard() {
     const phoneNumber = document.getElementById('phoneNumber').value || '+880 1931 034992';
     const bloodGroup = document.getElementById('bloodGroup').value || 'B+';
     const email = document.getElementById('email').value || 'example@gmail.com';
-    const barcodeData = document.getElementById('barcodeData').value || fullName.replace(/\s+/g, '-');
+    const qrcodeData = document.getElementById('qrcodeData').value || fullName.replace(/\s+/g, '-');
 
     // Update preview
     document.getElementById('fullNamePreview').textContent = fullName.toUpperCase();
@@ -122,25 +126,32 @@ function generateCard() {
     document.getElementById('bloodPreview').textContent = bloodGroup;
     document.getElementById('emailPreview').textContent = email;
 
-    // Generate barcode
-    generateBarcode(barcodeData);
+    // Generate QR code
+    generateQRCode(qrcodeData);
 
     // Show success message
     showNotification('ID Card generated successfully!');
 }
 
-// Generate Barcode
-function generateBarcode(data) {
+// Generate QR Code
+let qrcodeInstance = null;
+function generateQRCode(data) {
     try {
-        JsBarcode("#barcode", data, {
-            format: "CODE128",
-            width: 2,
-            height: 40,
-            displayValue: false,
-            margin: 0
+        const qrcodeContainer = document.getElementById('qrcode');
+        // Clear previous QR code
+        qrcodeContainer.innerHTML = '';
+        
+        // Create new QR code
+        qrcodeInstance = new QRCode(qrcodeContainer, {
+            text: data,
+            width: 80,
+            height: 80,
+            colorDark: '#000000',
+            colorLight: '#ffffff',
+            correctLevel: QRCode.CorrectLevel.H
         });
     } catch (error) {
-        console.error('Barcode generation error:', error);
+        console.error('QR Code generation error:', error);
     }
 }
 
@@ -252,24 +263,18 @@ function captureAndDownload(element, restoreDragMode) {
         ctx.fillText(text, pos.left, pos.top + 12);
     });
     
-    // Draw barcode
-    const barcodeSection = document.querySelector('.barcode-section');
-    const barcodeSvg = document.getElementById('barcode');
-    if (barcodeSvg) {
-        const barcodePos = getElementPosition(barcodeSection);
-        // Convert SVG to image
-        const svgData = new XMLSerializer().serializeToString(barcodeSvg);
-        const svgBlob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'});
-        const url = URL.createObjectURL(svgBlob);
-        const barcodeImg = new Image();
-        barcodeImg.onload = function() {
-            ctx.drawImage(barcodeImg, barcodePos.left, barcodePos.top, barcodeSvg.clientWidth, barcodeSvg.clientHeight);
-            URL.revokeObjectURL(url);
-            
-            // Download the canvas
-            downloadCanvas(canvas, restoreDragMode);
-        };
-        barcodeImg.src = url;
+    // Draw QR code
+    const qrcodeSection = document.querySelector('.qrcode-section');
+    const qrcodeCanvas = document.querySelector('#qrcode canvas');
+    const qrcodeImg = document.querySelector('#qrcode img');
+    const qrcodePos = getElementPosition(qrcodeSection);
+    
+    if (qrcodeCanvas) {
+        ctx.drawImage(qrcodeCanvas, qrcodePos.left, qrcodePos.top, 80, 80);
+        downloadCanvas(canvas, restoreDragMode);
+    } else if (qrcodeImg && qrcodeImg.complete) {
+        ctx.drawImage(qrcodeImg, qrcodePos.left, qrcodePos.top, 80, 80);
+        downloadCanvas(canvas, restoreDragMode);
     } else {
         downloadCanvas(canvas, restoreDragMode);
     }
@@ -358,34 +363,36 @@ function showNotification(message, type = 'success') {
 }
 
 // Real-time preview updates
-document.getElementById('fullName').addEventListener('input', function() {
-    document.getElementById('fullNamePreview').textContent = (this.value || 'ADI BARBU').toUpperCase();
-});
+function setupRealTimeUpdates() {
+    document.getElementById('fullName').addEventListener('input', function() {
+        document.getElementById('fullNamePreview').textContent = (this.value || 'ADI BARBU').toUpperCase();
+    });
 
-document.getElementById('designation').addEventListener('input', function() {
-    document.getElementById('designationPreview').textContent = this.value || 'Graphic Designer';
-});
+    document.getElementById('designation').addEventListener('input', function() {
+        document.getElementById('designationPreview').textContent = this.value || 'Graphic Designer';
+    });
 
-document.getElementById('idNumber').addEventListener('input', function() {
-    document.getElementById('idNumberPreview').textContent = this.value || '0000012345678910';
-});
+    document.getElementById('idNumber').addEventListener('input', function() {
+        document.getElementById('idNumberPreview').textContent = this.value || '0000012345678910';
+    });
 
-document.getElementById('phoneNumber').addEventListener('input', function() {
-    document.getElementById('phonePreview').textContent = this.value || '+880 1931 034992';
-});
+    document.getElementById('phoneNumber').addEventListener('input', function() {
+        document.getElementById('phonePreview').textContent = this.value || '+880 1931 034992';
+    });
 
-document.getElementById('bloodGroup').addEventListener('input', function() {
-    document.getElementById('bloodPreview').textContent = this.value || 'B+';
-});
+    document.getElementById('bloodGroup').addEventListener('input', function() {
+        document.getElementById('bloodPreview').textContent = this.value || 'B+';
+    });
 
-document.getElementById('email').addEventListener('input', function() {
-    document.getElementById('emailPreview').textContent = this.value || 'example@gmail.com';
-});
+    document.getElementById('email').addEventListener('input', function() {
+        document.getElementById('emailPreview').textContent = this.value || 'example@gmail.com';
+    });
 
-document.getElementById('barcodeData').addEventListener('input', function() {
-    const data = this.value || 'ID-CARD-GENERATOR';
-    generateBarcode(data);
-});
+    document.getElementById('qrcodeData').addEventListener('input', function() {
+        const data = this.value || 'ID-CARD-GENERATOR';
+        generateQRCode(data);
+    });
+}
 
 // ========== DRAG SYSTEM ==========
 

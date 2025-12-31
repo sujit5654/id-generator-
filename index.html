@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;0,700;0,900;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
@@ -62,8 +62,8 @@
             </div>
 
             <div class="form-group">
-                <label>Barcode Data/Link</label>
-                <input type="text" id="barcodeData" placeholder="Enter barcode data or link">
+                <label>QR Code Data/Link</label>
+                <input type="text" id="qrcodeData" placeholder="Enter QR code data or link">
             </div>
 
             <div class="button-group">
@@ -114,9 +114,9 @@
                     </div>
                 </div>
 
-                <!-- Barcode Section -->
-                <div class="barcode-section draggable-element" data-element="barcode">
-                    <svg id="barcode"></svg>
+                <!-- QR Code Section -->
+                <div class="qrcode-section draggable-element" data-element="qrcode">
+                    <div id="qrcode"></div>
                 </div>
             </div>
         </div>
