@@ -77,16 +77,16 @@ function setupPhotoUpload() {
 // Apply cropped image
 function applyCrop() {
     if (cropper) {
-        // Get cropped canvas with exact dimensions
+        // Get cropped canvas with high resolution for print quality
         const croppedCanvas = cropper.getCroppedCanvas({
-            width: 290,  // 2x for better quality (145 * 2)
-            height: 344, // 2x for better quality (172 * 2)
+            width: 580,  // 4x for very high quality (145 * 4)
+            height: 688, // 4x for very high quality (172 * 4)
             imageSmoothingEnabled: true,
             imageSmoothingQuality: 'high',
         });
         
-        // Set the cropped image to preview
-        const croppedImage = croppedCanvas.toDataURL('image/png');
+        // Set the cropped image to preview with maximum quality PNG
+        const croppedImage = croppedCanvas.toDataURL('image/png', 1.0);
         document.getElementById('photoPreview').src = croppedImage;
         
         // Close modal
@@ -141,15 +141,29 @@ function generateQRCode(data) {
         // Clear previous QR code
         qrcodeContainer.innerHTML = '';
         
-        // Create new QR code
+        // Create new QR code with higher resolution for better print quality
         qrcodeInstance = new QRCode(qrcodeContainer, {
             text: data,
-            width: 80,
-            height: 80,
+            width: 240,  // 3x size for high quality download
+            height: 240, // 3x size for high quality download
             colorDark: '#000000',
             colorLight: '#ffffff',
             correctLevel: QRCode.CorrectLevel.H
         });
+        
+        // Scale down the visual display but keep high res for download
+        setTimeout(() => {
+            const qrCanvas = qrcodeContainer.querySelector('canvas');
+            const qrImg = qrcodeContainer.querySelector('img');
+            if (qrCanvas) {
+                qrCanvas.style.width = '80px';
+                qrCanvas.style.height = '80px';
+            }
+            if (qrImg) {
+                qrImg.style.width = '80px';
+                qrImg.style.height = '80px';
+            }
+        }, 100);
     } catch (error) {
         console.error('QR Code generation error:', error);
     }
@@ -182,10 +196,15 @@ function downloadCard() {
 function captureAndDownload(element, restoreDragMode) {
     // Create a new canvas and draw everything manually
     const canvas = document.createElement('canvas');
-    const scale = 2;
+    const scale = 6; // Very high quality - 6x scale for crisp output (2400x3900 pixels)
     canvas.width = 400 * scale;
     canvas.height = 650 * scale;
     const ctx = canvas.getContext('2d');
+    
+    // Enable high quality rendering
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+    
     ctx.scale(scale, scale);
     
     // Draw white background
@@ -295,15 +314,16 @@ function getElementPosition(element) {
 
 function downloadCanvas(canvas, restoreDragMode) {
     const link = document.createElement('a');
-    link.download = 'id-card.png';
-    link.href = canvas.toDataURL('image/png');
+    link.download = 'id-card-high-quality.png';
+    // Export as maximum quality PNG (lossless)
+    link.href = canvas.toDataURL('image/png', 1.0);
     link.click();
     
     if (restoreDragMode) {
         toggleDragMode();
     }
     
-    showNotification('ID Card downloaded successfully!');
+    showNotification('High quality ID Card downloaded successfully!');
 }
 
 // Print Card
