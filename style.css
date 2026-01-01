@@ -307,6 +307,7 @@ body {
     letter-spacing: 5px;
     font-family: 'Roboto', sans-serif;
     margin: 0;
+    line-height: 1;
 }
 
 /* Designation Section */
@@ -332,6 +333,7 @@ body {
     color: #000;
     font-weight: 400;
     font-family: 'Roboto', sans-serif;
+    line-height: 1;
 }
 
 .designation-section .dash {
@@ -358,6 +360,7 @@ body {
     pointer-events: auto;
     cursor: default;
     white-space: nowrap;
+    line-height: 1;
 }
 
 .drag-mode-active .detail-row {
@@ -366,25 +369,25 @@ body {
 
 /* ID Number - positioned after "ID No :" */
 #idRow {
-    top: 450px;
+    top: 451px;
     left: 166px;
 }
 
 /* Phone - positioned after "Phone :" */
 #phoneRow {
-    top: 474px;
+    top: 475px;
     left: 164px;
 }
 
 /* Blood - positioned after "Blood :" */
 #bloodRow {
-    top: 500px;
+    top: 501px;
     left: 164px;
 }
 
 /* Email - positioned after "E-mail :" */
 #emailRow {
-    top: 519px;
+    top: 523px;
     left: 164px;
 }
 

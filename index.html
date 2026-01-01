@@ -12,6 +12,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -20,9 +21,15 @@
             <h1>ID Card Generator</h1>
             
             <div class="form-group">
-                <label>Template Background</label>
+                <label>Template Background (Front)</label>
                 <input type="file" id="templateInput" accept="image/*">
-                <small style="color: #888; display: block; margin-top: 5px;">Upload the ID card template image</small>
+                <small style="color: #888; display: block; margin-top: 5px;">Upload the front side template</small>
+            </div>
+
+            <div class="form-group">
+                <label>Template Background (Back)</label>
+                <input type="file" id="backTemplateInput" accept="image/*">
+                <small style="color: #888; display: block; margin-top: 5px;">Upload the back side template</small>
             </div>
             
             <div class="form-group">
@@ -69,7 +76,8 @@
             <div class="button-group">
                 <button onclick="toggleDragMode()" id="dragModeBtn">Enable Drag Mode</button>
                 <button onclick="generateCard()">Generate ID Card</button>
-                <button onclick="downloadCard()">Download Card</button>
+                <button onclick="downloadCard()">Download Card (PNG)</button>
+                <button onclick="downloadPDF()">Download PDF (Front & Back)</button>
                 <button onclick="printCard()">Print Card</button>
             </div>
         </div>
@@ -118,6 +126,12 @@
                 <div class="qrcode-section draggable-element" data-element="qrcode">
                     <div id="qrcode"></div>
                 </div>
+            </div>
+
+            <!-- Back Side Preview -->
+            <h2 style="margin-top: 30px;">Back Side Preview</h2>
+            <div class="id-card" id="idCardBack">
+                <img src="back.png" class="template-bg" id="backTemplateBg" alt="Back Template">
             </div>
         </div>
     </div>

@@ -9,12 +9,14 @@ let offsetY = 0;
 
 // Store template as base64 for download
 let templateBase64 = null;
+let backTemplateBase64 = 'back.png';
 
 // Initialize QR code on page load
 document.addEventListener('DOMContentLoaded', function() {
     generateQRCode('ID-CARD-GENERATOR');
     initializeDragSystem();
     setupTemplateUpload();
+    setupBackTemplateUpload();
     setupPhotoUpload();
     setupRealTimeUpdates();
 });
@@ -27,8 +29,24 @@ function setupTemplateUpload() {
             const reader = new FileReader();
             reader.onload = function(e) {
                 templateBase64 = e.target.result;
-                document.querySelector('.template-bg').src = templateBase64;
-                showNotification('Template uploaded successfully!');
+                document.querySelector('#idCard .template-bg').src = templateBase64;
+                showNotification('Front template uploaded successfully!');
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+}
+
+// Setup back template upload handler
+function setupBackTemplateUpload() {
+    document.getElementById('backTemplateInput').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                backTemplateBase64 = e.target.result;
+                document.getElementById('backTemplateBg').src = backTemplateBase64;
+                showNotification('Back template uploaded successfully!');
             };
             reader.readAsDataURL(file);
         }
@@ -194,109 +212,119 @@ function downloadCard() {
 }
 
 function captureAndDownload(element, restoreDragMode) {
-    // Create a new canvas and draw everything manually
-    const canvas = document.createElement('canvas');
-    const scale = 6; // Very high quality - 6x scale for crisp output (2400x3900 pixels)
-    canvas.width = 400 * scale;
-    canvas.height = 650 * scale;
-    const ctx = canvas.getContext('2d');
-    
-    // Enable high quality rendering
-    ctx.imageSmoothingEnabled = true;
-    ctx.imageSmoothingQuality = 'high';
-    
-    ctx.scale(scale, scale);
-    
-    // Draw white background
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(0, 0, 400, 650);
-    
-    // Draw template background
-    const templateImg = document.querySelector('.template-bg');
-    if (templateImg && templateImg.complete) {
-        ctx.drawImage(templateImg, 0, 0, 400, 650);
+    // Use html2canvas to capture exactly what's on screen
+    html2canvas(element, {
+        scale: 6, // High quality - 6x scale for crisp output
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: '#ffffff',
+        logging: false,
+        width: 400,
+        height: 650
+    }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = 'id-card-high-quality.png';
+        link.href = canvas.toDataURL('image/png', 1.0);
+        link.click();
+        
+        if (restoreDragMode) {
+            toggleDragMode();
+        }
+        
+        showNotification('High quality ID Card downloaded successfully!');
+    }).catch(error => {
+        console.error('Export error:', error);
+        showNotification('Error exporting card. Please try again.', 'error');
+        
+        if (restoreDragMode) {
+            toggleDragMode();
+        }
+    });
+}
+
+// Download PDF with front and back sides
+function downloadPDF() {
+    // Check if templates are uploaded
+    if (!templateBase64) {
+        showNotification('Please upload the front template image first!', 'error');
+        return;
     }
     
-    // Draw photo
-    const photoImg = document.getElementById('photoPreview');
-    if (photoImg && photoImg.complete && photoImg.src && !photoImg.src.includes('Person Photo')) {
-        const photoSection = document.querySelector('.photo-section');
-        const photoRect = getElementPosition(photoSection);
-        ctx.drawImage(photoImg, photoRect.left, photoRect.top, photoRect.width, photoRect.height);
+    const frontCard = document.getElementById('idCard');
+    const backCard = document.getElementById('idCardBack');
+    
+    // Temporarily disable drag mode for clean screenshot
+    const wasDragMode = isDragMode;
+    if (isDragMode) {
+        toggleDragMode();
     }
     
-    // Draw name
-    const nameSection = document.querySelector('.name-section');
-    const nameText = document.getElementById('fullNamePreview').textContent;
-    const namePos = getElementPosition(nameSection);
-    ctx.font = '900 32px Roboto, sans-serif';
-    ctx.fillStyle = '#004d73';
-    ctx.textAlign = 'center';
-    ctx.fillText(nameText, namePos.left + namePos.width/2, namePos.top + 28);
-    
-    // Draw designation with dashes
-    const designationSection = document.querySelector('.designation-section');
-    const designationText = document.getElementById('designationPreview').textContent;
-    const designationPos = getElementPosition(designationSection);
-    const designationWithDashes = '— ' + designationText + ' —';
-    ctx.font = '400 17px Roboto, sans-serif';
-    ctx.fillStyle = '#000000';
-    ctx.textAlign = 'center';
-    
-    // Draw the dashes in blue and text in black
-    const centerX = designationPos.left + designationPos.width/2;
-    const textY = designationPos.top + 15;
-    const textWidth = ctx.measureText(designationText).width;
-    
-    // Left dash
-    ctx.fillStyle = '#004d73';
-    ctx.font = '700 17px Roboto, sans-serif';
-    ctx.fillText('—', centerX - textWidth/2 - 20, textY);
-    
-    // Designation text
-    ctx.fillStyle = '#000000';
-    ctx.font = '400 17px Roboto, sans-serif';
-    ctx.fillText(designationText, centerX, textY);
-    
-    // Right dash
-    ctx.fillStyle = '#004d73';
-    ctx.font = '700 17px Roboto, sans-serif';
-    ctx.fillText('—', centerX + textWidth/2 + 20, textY);
-    
-    // Draw detail values
-    ctx.font = '400 15px Roboto, sans-serif';
-    ctx.fillStyle = '#000000';
-    ctx.textAlign = 'left';
-    
-    const details = [
-        { id: 'idRow', textId: 'idNumberPreview' },
-        { id: 'phoneRow', textId: 'phonePreview' },
-        { id: 'bloodRow', textId: 'bloodPreview' },
-        { id: 'emailRow', textId: 'emailPreview' }
-    ];
-    
-    details.forEach(detail => {
-        const row = document.getElementById(detail.id);
-        const text = document.getElementById(detail.textId).textContent;
-        const pos = getElementPosition(row);
-        ctx.fillText(text, pos.left, pos.top + 12);
+    // Remove any dragging class
+    document.querySelectorAll('.dragging').forEach(el => {
+        el.classList.remove('dragging');
     });
     
-    // Draw QR code
-    const qrcodeSection = document.querySelector('.qrcode-section');
-    const qrcodeCanvas = document.querySelector('#qrcode canvas');
-    const qrcodeImg = document.querySelector('#qrcode img');
-    const qrcodePos = getElementPosition(qrcodeSection);
+    showNotification('Generating PDF... Please wait.');
     
-    if (qrcodeCanvas) {
-        ctx.drawImage(qrcodeCanvas, qrcodePos.left, qrcodePos.top, 80, 80);
-        downloadCanvas(canvas, restoreDragMode);
-    } else if (qrcodeImg && qrcodeImg.complete) {
-        ctx.drawImage(qrcodeImg, qrcodePos.left, qrcodePos.top, 80, 80);
-        downloadCanvas(canvas, restoreDragMode);
-    } else {
-        downloadCanvas(canvas, restoreDragMode);
-    }
+    // Capture both front and back
+    Promise.all([
+        html2canvas(frontCard, {
+            scale: 4,
+            useCORS: true,
+            allowTaint: true,
+            backgroundColor: '#ffffff',
+            logging: false,
+            width: 400,
+            height: 650
+        }),
+        html2canvas(backCard, {
+            scale: 4,
+            useCORS: true,
+            allowTaint: true,
+            backgroundColor: '#ffffff',
+            logging: false,
+            width: 400,
+            height: 650
+        })
+    ]).then(([frontCanvas, backCanvas]) => {
+        const { jsPDF } = window.jspdf;
+        
+        // Create PDF with ID card dimensions (credit card size approximately)
+        // Standard ID card: 85.6mm x 53.98mm (CR80)
+        const cardWidth = 85.6;
+        const cardHeight = 139; // Adjusted for our aspect ratio (400x650)
+        
+        const pdf = new jsPDF({
+            orientation: 'portrait',
+            unit: 'mm',
+            format: [cardWidth, cardHeight]
+        });
+        
+        // Add front side
+        const frontImgData = frontCanvas.toDataURL('image/png', 1.0);
+        pdf.addImage(frontImgData, 'PNG', 0, 0, cardWidth, cardHeight);
+        
+        // Add back side on new page
+        pdf.addPage([cardWidth, cardHeight], 'portrait');
+        const backImgData = backCanvas.toDataURL('image/png', 1.0);
+        pdf.addImage(backImgData, 'PNG', 0, 0, cardWidth, cardHeight);
+        
+        // Download PDF
+        pdf.save('id-card-front-back.pdf');
+        
+        if (wasDragMode) {
+            toggleDragMode();
+        }
+        
+        showNotification('PDF downloaded successfully with front and back sides!');
+    }).catch(error => {
+        console.error('PDF export error:', error);
+        showNotification('Error generating PDF. Please try again.', 'error');
+        
+        if (wasDragMode) {
+            toggleDragMode();
+        }
+    });
 }
 
 function getElementPosition(element) {
