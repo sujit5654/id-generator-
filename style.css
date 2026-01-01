@@ -100,6 +100,11 @@ body {
 }
 
 .button-group button:nth-child(4) {
+    background: linear-gradient(135deg, #9c27b0, #7b1fa2);
+    color: white;
+}
+
+.button-group button:nth-child(5) {
     background: linear-gradient(135deg, #6c757d, #5a6268);
     color: white;
 }
@@ -261,8 +266,7 @@ body {
 .photo-section {
     position: absolute;
     top: 194px;
-    left: 50%;
-    transform: translateX(-50%);
+    left: 130.5px; /* (400 - 139) / 2 = 130.5 to center */
     width: 139px;
     height: 151px;
     z-index: 2;
@@ -287,8 +291,8 @@ body {
 .name-section {
     position: absolute;
     top: 362px;
-    left: 50%;
-    transform: translateX(-50%);
+    left: 0;
+    right: 0;
     text-align: center;
     z-index: 2;
     pointer-events: auto;
@@ -314,8 +318,8 @@ body {
 .designation-section {
     position: absolute;
     top: 407px;
-    left: 50%;
-    transform: translateX(-50%);
+    left: 0;
+    right: 0;
     text-align: center;
     z-index: 2;
     pointer-events: auto;
@@ -403,8 +407,7 @@ body {
 .qrcode-section {
     position: absolute;
     bottom: 28px;
-    left: 50%;
-    transform: translateX(-50%);
+    left: 160px; /* (400 - 80) / 2 = 160 to center */
     z-index: 2;
     pointer-events: auto;
     cursor: default;

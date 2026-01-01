@@ -266,92 +266,136 @@ function downloadPDF() {
     
     showNotification('Generating PDF... Please wait.');
     
-    // Capture both front and back
-    Promise.all([
-        html2canvas(frontCard, {
-            scale: 4,
-            useCORS: true,
-            allowTaint: true,
-            backgroundColor: '#ffffff',
-            logging: false,
-            width: 400,
-            height: 650
+    // Temporarily remove overflow hidden for proper capture
+    const originalFrontOverflow = frontCard.style.overflow;
+    const originalBackOverflow = backCard.style.overflow;
+    frontCard.style.overflow = 'visible';
+    backCard.style.overflow = 'visible';
+    
+    // Wait for images to be fully loaded
+    const backImg = document.getElementById('backTemplateBg');
+    const frontImg = document.querySelector('#idCard .template-bg');
+    
+    const waitForImages = Promise.all([
+        new Promise((resolve) => {
+            if (frontImg.complete && frontImg.naturalHeight !== 0) {
+                resolve();
+            } else {
+                frontImg.onload = resolve;
+                setTimeout(resolve, 1000);
+            }
         }),
-        html2canvas(backCard, {
-            scale: 4,
-            useCORS: true,
-            allowTaint: true,
-            backgroundColor: '#ffffff',
-            logging: false,
-            width: 400,
-            height: 650
+        new Promise((resolve) => {
+            if (backImg.complete && backImg.naturalHeight !== 0) {
+                resolve();
+            } else {
+                backImg.onload = resolve;
+                setTimeout(resolve, 1000);
+            }
         })
-    ]).then(([frontCanvas, backCanvas]) => {
-        const { jsPDF } = window.jspdf;
-        
-        // Create PDF with ID card dimensions (credit card size approximately)
-        // Standard ID card: 85.6mm x 53.98mm (CR80)
-        const cardWidth = 85.6;
-        const cardHeight = 139; // Adjusted for our aspect ratio (400x650)
-        
-        const pdf = new jsPDF({
-            orientation: 'portrait',
-            unit: 'mm',
-            format: [cardWidth, cardHeight]
-        });
-        
-        // Add front side
-        const frontImgData = frontCanvas.toDataURL('image/png', 1.0);
-        pdf.addImage(frontImgData, 'PNG', 0, 0, cardWidth, cardHeight);
-        
-        // Add back side on new page
-        pdf.addPage([cardWidth, cardHeight], 'portrait');
-        const backImgData = backCanvas.toDataURL('image/png', 1.0);
-        pdf.addImage(backImgData, 'PNG', 0, 0, cardWidth, cardHeight);
-        
-        // Download PDF
-        pdf.save('id-card-front-back.pdf');
-        
-        if (wasDragMode) {
-            toggleDragMode();
-        }
-        
-        showNotification('PDF downloaded successfully with front and back sides!');
-    }).catch(error => {
-        console.error('PDF export error:', error);
-        showNotification('Error generating PDF. Please try again.', 'error');
-        
-        if (wasDragMode) {
-            toggleDragMode();
-        }
+    ]);
+    
+    waitForImages.then(() => {
+        // Small delay to ensure rendering is complete
+        setTimeout(() => {
+            // Hide back card while capturing front
+            backCard.style.display = 'none';
+            
+            // Capture front card
+            html2canvas(frontCard, {
+                scale: 4,
+                useCORS: true,
+                allowTaint: true,
+                backgroundColor: '#ffffff',
+                logging: false,
+                width: 400,
+                height: 650,
+                onclone: function(clonedDoc) {
+                    const clonedFront = clonedDoc.getElementById('idCard');
+                    clonedFront.style.overflow = 'hidden';
+                    clonedFront.style.borderRadius = '15px';
+                    // Hide back card in clone too
+                    const clonedBack = clonedDoc.getElementById('idCardBack');
+                    if (clonedBack) clonedBack.style.display = 'none';
+                }
+            }).then(frontCanvas => {
+                // Show back card and hide front for back capture
+                backCard.style.display = 'block';
+                frontCard.style.display = 'none';
+                
+                // Capture back card
+                html2canvas(backCard, {
+                    scale: 4,
+                    useCORS: true,
+                    allowTaint: true,
+                    backgroundColor: '#ffffff',
+                    logging: false,
+                    width: 400,
+                    height: 650,
+                    onclone: function(clonedDoc) {
+                        const clonedBack = clonedDoc.getElementById('idCardBack');
+                        clonedBack.style.overflow = 'hidden';
+                        clonedBack.style.borderRadius = '15px';
+                        // Hide front card in clone too
+                        const clonedFront = clonedDoc.getElementById('idCard');
+                        if (clonedFront) clonedFront.style.display = 'none';
+                    }
+                }).then(backCanvas => {
+                    // Restore display
+                    frontCard.style.display = 'block';
+                    backCard.style.display = 'block';
+                    
+                    const { jsPDF } = window.jspdf;
+                    
+                    // Create PDF with ID card dimensions
+                    const cardWidth = 85.6;
+                    const cardHeight = 139;
+                    
+                    const pdf = new jsPDF({
+                        orientation: 'portrait',
+                        unit: 'mm',
+                        format: [cardWidth, cardHeight]
+                    });
+                    
+                    // Add front side
+                    const frontImgData = frontCanvas.toDataURL('image/png', 1.0);
+                    pdf.addImage(frontImgData, 'PNG', 0, 0, cardWidth, cardHeight);
+                    
+                    // Add back side on new page
+                    pdf.addPage([cardWidth, cardHeight], 'portrait');
+                    const backImgData = backCanvas.toDataURL('image/png', 1.0);
+                    pdf.addImage(backImgData, 'PNG', 0, 0, cardWidth, cardHeight);
+                    
+                    // Download PDF
+                    pdf.save('id-card-front-back.pdf');
+                    
+                    // Restore overflow
+                    frontCard.style.overflow = originalFrontOverflow;
+                    backCard.style.overflow = originalBackOverflow;
+                    
+                    if (wasDragMode) {
+                        toggleDragMode();
+                    }
+                    
+                    showNotification('PDF downloaded successfully with front and back sides!');
+                }).catch(error => {
+                    console.error('Back capture error:', error);
+                    frontCard.style.display = 'block';
+                    backCard.style.display = 'block';
+                    frontCard.style.overflow = originalFrontOverflow;
+                    backCard.style.overflow = originalBackOverflow;
+                    showNotification('Error generating PDF. Please try again.', 'error');
+                });
+            }).catch(error => {
+                console.error('Front capture error:', error);
+                frontCard.style.display = 'block';
+                backCard.style.display = 'block';
+                frontCard.style.overflow = originalFrontOverflow;
+                backCard.style.overflow = originalBackOverflow;
+                showNotification('Error generating PDF. Please try again.', 'error');
+            });
+        }, 500);
     });
-}
-
-function getElementPosition(element) {
-    const card = document.getElementById('idCard');
-    const cardRect = card.getBoundingClientRect();
-    const elemRect = element.getBoundingClientRect();
-    
-    return {
-        left: elemRect.left - cardRect.left,
-        top: elemRect.top - cardRect.top,
-        width: elemRect.width,
-        height: elemRect.height
-    };
-}
-
-function downloadCanvas(canvas, restoreDragMode) {
-    const link = document.createElement('a');
-    link.download = 'id-card-high-quality.png';
-    // Export as maximum quality PNG (lossless)
-    link.href = canvas.toDataURL('image/png', 1.0);
-    link.click();
-    
-    if (restoreDragMode) {
-        toggleDragMode();
-    }
-    
-    showNotification('High quality ID Card downloaded successfully!');
 }
 
 // Print Card
