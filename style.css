@@ -308,7 +308,7 @@ body {
     font-size: 32px;
     font-weight: 900;
     color: #004d73;
-    letter-spacing: 5px;
+    letter-spacing: 2px;
     font-family: 'Roboto', sans-serif;
     margin: 0;
     line-height: 1;
@@ -332,7 +332,7 @@ body {
 }
 
 .designation-section span {
-    font-size: 17px;
+    font-size: 22px;
     font-style: normal;
     color: #000;
     font-weight: 400;
@@ -374,25 +374,25 @@ body {
 /* ID Number - positioned after "ID No :" */
 #idRow {
     top: 451px;
-    left: 166px;
+    left: 132px;
 }
 
 /* Phone - positioned after "Phone :" */
 #phoneRow {
     top: 475px;
-    left: 164px;
+    left: 132px;
 }
 
 /* Blood - positioned after "Blood :" */
 #bloodRow {
     top: 501px;
-    left: 164px;
+    left: 132px;
 }
 
 /* Email - positioned after "E-mail :" */
 #emailRow {
     top: 523px;
-    left: 164px;
+    left: 132px;
 }
 
 .detail-row .value {
