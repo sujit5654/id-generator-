@@ -599,3 +599,393 @@ function stopDrag() {
         draggedElement = null;
     }
 }
+
+// ========== STYLE CONTROLS ==========
+
+// Toggle Style Section
+function toggleStyleSection() {
+    const content = document.getElementById('styleControlsContent');
+    const icon = document.getElementById('toggleIcon');
+    
+    content.classList.toggle('collapsed');
+    icon.textContent = content.classList.contains('collapsed') ? '▶' : '▼';
+}
+
+// Update Name Styling
+function updateNameStyle() {
+    const nameElement = document.getElementById('fullNamePreview');
+    
+    const fontSize = document.getElementById('nameFontSize').value;
+    const color = document.getElementById('nameColor').value;
+    const fontWeight = document.getElementById('nameFontWeight').value;
+    const letterSpacing = document.getElementById('nameLetterSpacing').value;
+    
+    nameElement.style.fontSize = fontSize + 'px';
+    nameElement.style.color = color;
+    nameElement.style.fontWeight = fontWeight;
+    nameElement.style.letterSpacing = letterSpacing + 'px';
+    
+    // Update display values
+    document.getElementById('nameFontSizeValue').textContent = fontSize + 'px';
+    document.getElementById('nameLetterSpacingValue').textContent = letterSpacing + 'px';
+}
+
+// Update Designation Styling
+function updateDesignationStyle() {
+    const designationElement = document.getElementById('designationPreview');
+    const designationSection = document.querySelector('.designation-section');
+    
+    const fontSize = document.getElementById('designationFontSize').value;
+    const color = document.getElementById('designationColor').value;
+    const isItalic = document.getElementById('designationItalic').checked;
+    
+    designationElement.style.fontSize = fontSize + 'px';
+    designationElement.style.color = color;
+    designationElement.style.fontStyle = isItalic ? 'italic' : 'normal';
+    
+    // Also update the dashes
+    const dashes = designationSection.querySelectorAll('.dash');
+    dashes.forEach(dash => {
+        dash.style.fontSize = (parseInt(fontSize) - 5) + 'px';
+    });
+    
+    // Update display value
+    document.getElementById('designationFontSizeValue').textContent = fontSize + 'px';
+}
+
+// Update Details Styling
+function updateDetailsStyle() {
+    const detailValues = document.querySelectorAll('.detail-row .value');
+    
+    const fontSize = document.getElementById('detailsFontSize').value;
+    const color = document.getElementById('detailsColor').value;
+    const fontWeight = document.getElementById('detailsFontWeight').value;
+    
+    detailValues.forEach(value => {
+        value.style.fontSize = fontSize + 'px';
+        value.style.color = color;
+        value.style.fontWeight = fontWeight;
+    });
+    
+    // Update display value
+    document.getElementById('detailsFontSizeValue').textContent = fontSize + 'px';
+}
+
+// Update Photo Styling
+function updatePhotoStyle() {
+    const photoSection = document.querySelector('.photo-section');
+    const photoImg = document.getElementById('photoPreview');
+    
+    const borderRadius = document.getElementById('photoBorderRadius').value;
+    const borderWidth = document.getElementById('photoBorderWidth').value;
+    const borderColor = document.getElementById('photoBorderColor').value;
+    const hasShadow = document.getElementById('photoShadow').checked;
+    
+    photoSection.style.borderRadius = borderRadius + '%';
+    photoSection.style.border = borderWidth > 0 ? `${borderWidth}px solid ${borderColor}` : 'none';
+    photoSection.style.boxShadow = hasShadow ? '0 4px 15px rgba(0, 0, 0, 0.3)' : 'none';
+    photoSection.style.overflow = 'hidden';
+    
+    photoImg.style.borderRadius = borderRadius + '%';
+    
+    // Update display values
+    document.getElementById('photoBorderRadiusValue').textContent = borderRadius + '%';
+    document.getElementById('photoBorderWidthValue').textContent = borderWidth + 'px';
+}
+
+// Update QR Code Styling
+function updateQRStyle() {
+    const qrcodeSection = document.querySelector('.qrcode-section');
+    const qrcodeContainer = document.getElementById('qrcode');
+    
+    const size = document.getElementById('qrCodeSize').value;
+    
+    qrcodeContainer.style.width = size + 'px';
+    qrcodeContainer.style.height = size + 'px';
+    
+    // Update the QR code canvas/image size
+    const qrCanvas = qrcodeContainer.querySelector('canvas');
+    const qrImg = qrcodeContainer.querySelector('img');
+    
+    if (qrCanvas) {
+        qrCanvas.style.width = size + 'px';
+        qrCanvas.style.height = size + 'px';
+    }
+    if (qrImg) {
+        qrImg.style.width = size + 'px';
+        qrImg.style.height = size + 'px';
+    }
+    
+    // Update display value
+    document.getElementById('qrCodeSizeValue').textContent = size + 'px';
+}
+
+// Toggle Element Visibility
+function toggleElementVisibility(elementName) {
+    const elementMap = {
+        'photo': '.photo-section',
+        'name': '.name-section',
+        'designation': '.designation-section',
+        'id': '#idRow',
+        'phone': '#phoneRow',
+        'blood': '#bloodRow',
+        'email': '#emailRow',
+        'qrcode': '.qrcode-section'
+    };
+    
+    const checkboxMap = {
+        'photo': 'showPhoto',
+        'name': 'showName',
+        'designation': 'showDesignation',
+        'id': 'showId',
+        'phone': 'showPhone',
+        'blood': 'showBlood',
+        'email': 'showEmail',
+        'qrcode': 'showQrcode'
+    };
+    
+    const selector = elementMap[elementName];
+    const checkboxId = checkboxMap[elementName];
+    
+    if (selector && checkboxId) {
+        const element = document.querySelector(selector);
+        const checkbox = document.getElementById(checkboxId);
+        
+        if (element && checkbox) {
+            element.style.display = checkbox.checked ? 'block' : 'none';
+        }
+    }
+}
+
+// Reset All Positions
+function resetPositions() {
+    const positions = {
+        '.photo-section': { top: '194px', left: '130.5px' },
+        '.name-section': { top: '362px', left: '0', right: '0' },
+        '.designation-section': { top: '407px', left: '0', right: '0' },
+        '#idRow': { top: '451px', left: '132px' },
+        '#phoneRow': { top: '475px', left: '132px' },
+        '#bloodRow': { top: '501px', left: '132px' },
+        '#emailRow': { top: '523px', left: '132px' },
+        '.qrcode-section': { bottom: '28px', left: '160px', top: 'auto' }
+    };
+    
+    Object.keys(positions).forEach(selector => {
+        const element = document.querySelector(selector);
+        if (element) {
+            element.style.top = positions[selector].top || 'auto';
+            element.style.left = positions[selector].left || 'auto';
+            element.style.right = positions[selector].right || 'auto';
+            element.style.bottom = positions[selector].bottom || 'auto';
+            element.style.transform = 'none';
+        }
+    });
+    
+    showNotification('All positions reset to default!', 'success');
+}
+
+// Reset All Styles
+function resetStyles() {
+    // Reset Name Styles
+    document.getElementById('nameFontSize').value = 32;
+    document.getElementById('nameColor').value = '#004d73';
+    document.getElementById('nameFontWeight').value = '900';
+    document.getElementById('nameLetterSpacing').value = 2;
+    updateNameStyle();
+    
+    // Reset Designation Styles
+    document.getElementById('designationFontSize').value = 22;
+    document.getElementById('designationColor').value = '#000000';
+    document.getElementById('designationItalic').checked = false;
+    updateDesignationStyle();
+    
+    // Reset Details Styles
+    document.getElementById('detailsFontSize').value = 15;
+    document.getElementById('detailsColor').value = '#000000';
+    document.getElementById('detailsFontWeight').value = '400';
+    updateDetailsStyle();
+    
+    // Reset Photo Styles
+    document.getElementById('photoBorderRadius').value = 0;
+    document.getElementById('photoBorderWidth').value = 0;
+    document.getElementById('photoBorderColor').value = '#004d73';
+    document.getElementById('photoShadow').checked = false;
+    updatePhotoStyle();
+    
+    // Reset QR Code Size
+    document.getElementById('qrCodeSize').value = 80;
+    updateQRStyle();
+    
+    // Reset Visibility
+    ['showPhoto', 'showName', 'showDesignation', 'showId', 'showPhone', 'showBlood', 'showEmail', 'showQrcode'].forEach(id => {
+        document.getElementById(id).checked = true;
+    });
+    ['photo', 'name', 'designation', 'id', 'phone', 'blood', 'email', 'qrcode'].forEach(name => {
+        toggleElementVisibility(name);
+    });
+    
+    showNotification('All styles reset to default!', 'success');
+}
+
+// Save Layout to LocalStorage
+function saveLayout() {
+    const layout = {
+        // Positions
+        positions: {},
+        // Styles
+        styles: {
+            name: {
+                fontSize: document.getElementById('nameFontSize').value,
+                color: document.getElementById('nameColor').value,
+                fontWeight: document.getElementById('nameFontWeight').value,
+                letterSpacing: document.getElementById('nameLetterSpacing').value
+            },
+            designation: {
+                fontSize: document.getElementById('designationFontSize').value,
+                color: document.getElementById('designationColor').value,
+                italic: document.getElementById('designationItalic').checked
+            },
+            details: {
+                fontSize: document.getElementById('detailsFontSize').value,
+                color: document.getElementById('detailsColor').value,
+                fontWeight: document.getElementById('detailsFontWeight').value
+            },
+            photo: {
+                borderRadius: document.getElementById('photoBorderRadius').value,
+                borderWidth: document.getElementById('photoBorderWidth').value,
+                borderColor: document.getElementById('photoBorderColor').value,
+                shadow: document.getElementById('photoShadow').checked
+            },
+            qrCode: {
+                size: document.getElementById('qrCodeSize').value
+            }
+        },
+        // Visibility
+        visibility: {
+            photo: document.getElementById('showPhoto').checked,
+            name: document.getElementById('showName').checked,
+            designation: document.getElementById('showDesignation').checked,
+            id: document.getElementById('showId').checked,
+            phone: document.getElementById('showPhone').checked,
+            blood: document.getElementById('showBlood').checked,
+            email: document.getElementById('showEmail').checked,
+            qrcode: document.getElementById('showQrcode').checked
+        }
+    };
+    
+    // Save positions
+    const draggableElements = document.querySelectorAll('.draggable-element');
+    draggableElements.forEach(element => {
+        const name = element.getAttribute('data-element');
+        layout.positions[name] = {
+            top: element.style.top,
+            left: element.style.left,
+            right: element.style.right,
+            bottom: element.style.bottom
+        };
+    });
+    
+    localStorage.setItem('idCardLayout', JSON.stringify(layout));
+    showNotification('Layout saved successfully!', 'success');
+}
+
+// Load Layout from LocalStorage
+function loadLayout() {
+    const savedLayout = localStorage.getItem('idCardLayout');
+    
+    if (!savedLayout) {
+        showNotification('No saved layout found!', 'error');
+        return;
+    }
+    
+    try {
+        const layout = JSON.parse(savedLayout);
+        
+        // Apply positions
+        if (layout.positions) {
+            const elementMap = {
+                'photo': '.photo-section',
+                'name': '.name-section',
+                'designation': '.designation-section',
+                'id': '#idRow',
+                'phone': '#phoneRow',
+                'blood': '#bloodRow',
+                'email': '#emailRow',
+                'qrcode': '.qrcode-section'
+            };
+            
+            Object.keys(layout.positions).forEach(name => {
+                const selector = elementMap[name];
+                const element = document.querySelector(selector);
+                const pos = layout.positions[name];
+                
+                if (element && pos) {
+                    if (pos.top) element.style.top = pos.top;
+                    if (pos.left) element.style.left = pos.left;
+                    if (pos.right) element.style.right = pos.right;
+                    if (pos.bottom) element.style.bottom = pos.bottom;
+                }
+            });
+        }
+        
+        // Apply styles
+        if (layout.styles) {
+            // Name styles
+            if (layout.styles.name) {
+                document.getElementById('nameFontSize').value = layout.styles.name.fontSize;
+                document.getElementById('nameColor').value = layout.styles.name.color;
+                document.getElementById('nameFontWeight').value = layout.styles.name.fontWeight;
+                document.getElementById('nameLetterSpacing').value = layout.styles.name.letterSpacing;
+                updateNameStyle();
+            }
+            
+            // Designation styles
+            if (layout.styles.designation) {
+                document.getElementById('designationFontSize').value = layout.styles.designation.fontSize;
+                document.getElementById('designationColor').value = layout.styles.designation.color;
+                document.getElementById('designationItalic').checked = layout.styles.designation.italic;
+                updateDesignationStyle();
+            }
+            
+            // Details styles
+            if (layout.styles.details) {
+                document.getElementById('detailsFontSize').value = layout.styles.details.fontSize;
+                document.getElementById('detailsColor').value = layout.styles.details.color;
+                document.getElementById('detailsFontWeight').value = layout.styles.details.fontWeight;
+                updateDetailsStyle();
+            }
+            
+            // Photo styles
+            if (layout.styles.photo) {
+                document.getElementById('photoBorderRadius').value = layout.styles.photo.borderRadius;
+                document.getElementById('photoBorderWidth').value = layout.styles.photo.borderWidth;
+                document.getElementById('photoBorderColor').value = layout.styles.photo.borderColor;
+                document.getElementById('photoShadow').checked = layout.styles.photo.shadow;
+                updatePhotoStyle();
+            }
+            
+            // QR Code styles
+            if (layout.styles.qrCode) {
+                document.getElementById('qrCodeSize').value = layout.styles.qrCode.size;
+                updateQRStyle();
+            }
+        }
+        
+        // Apply visibility
+        if (layout.visibility) {
+            Object.keys(layout.visibility).forEach(name => {
+                const checkboxId = 'show' + name.charAt(0).toUpperCase() + name.slice(1);
+                const checkbox = document.getElementById(checkboxId);
+                if (checkbox) {
+                    checkbox.checked = layout.visibility[name];
+                    toggleElementVisibility(name);
+                }
+            });
+        }
+        
+        showNotification('Layout loaded successfully!', 'success');
+    } catch (error) {
+        console.error('Error loading layout:', error);
+        showNotification('Error loading layout!', 'error');
+    }
+}

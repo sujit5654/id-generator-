@@ -72,6 +72,167 @@
                 <input type="text" id="qrcodeData" placeholder="Enter QR code data or link">
             </div>
 
+            <!-- Style Controls Section -->
+            <div class="style-controls-section">
+                <h3 class="section-toggle" onclick="toggleStyleSection()">
+                    <span>🎨 Style Controls</span>
+                    <span id="toggleIcon">▼</span>
+                </h3>
+                
+                <div id="styleControlsContent" class="style-controls-content">
+                    <!-- Name Styling -->
+                    <div class="style-group">
+                        <h4>Name Styling</h4>
+                        <div class="control-row">
+                            <label>Font Size</label>
+                            <input type="range" id="nameFontSize" min="16" max="48" value="32" oninput="updateNameStyle()">
+                            <span id="nameFontSizeValue">32px</span>
+                        </div>
+                        <div class="control-row">
+                            <label>Font Color</label>
+                            <input type="color" id="nameColor" value="#004d73" oninput="updateNameStyle()">
+                        </div>
+                        <div class="control-row">
+                            <label>Font Weight</label>
+                            <select id="nameFontWeight" onchange="updateNameStyle()">
+                                <option value="400">Normal</option>
+                                <option value="500">Medium</option>
+                                <option value="700">Bold</option>
+                                <option value="900" selected>Extra Bold</option>
+                            </select>
+                        </div>
+                        <div class="control-row">
+                            <label>Letter Spacing</label>
+                            <input type="range" id="nameLetterSpacing" min="0" max="10" value="2" oninput="updateNameStyle()">
+                            <span id="nameLetterSpacingValue">2px</span>
+                        </div>
+                    </div>
+
+                    <!-- Designation Styling -->
+                    <div class="style-group">
+                        <h4>Designation Styling</h4>
+                        <div class="control-row">
+                            <label>Font Size</label>
+                            <input type="range" id="designationFontSize" min="12" max="32" value="22" oninput="updateDesignationStyle()">
+                            <span id="designationFontSizeValue">22px</span>
+                        </div>
+                        <div class="control-row">
+                            <label>Font Color</label>
+                            <input type="color" id="designationColor" value="#000000" oninput="updateDesignationStyle()">
+                        </div>
+                        <div class="control-row">
+                            <label>Italic</label>
+                            <input type="checkbox" id="designationItalic" onchange="updateDesignationStyle()">
+                        </div>
+                    </div>
+
+                    <!-- Details Styling -->
+                    <div class="style-group">
+                        <h4>Details Styling</h4>
+                        <div class="control-row">
+                            <label>Font Size</label>
+                            <input type="range" id="detailsFontSize" min="10" max="24" value="15" oninput="updateDetailsStyle()">
+                            <span id="detailsFontSizeValue">15px</span>
+                        </div>
+                        <div class="control-row">
+                            <label>Font Color</label>
+                            <input type="color" id="detailsColor" value="#000000" oninput="updateDetailsStyle()">
+                        </div>
+                        <div class="control-row">
+                            <label>Font Weight</label>
+                            <select id="detailsFontWeight" onchange="updateDetailsStyle()">
+                                <option value="400" selected>Normal</option>
+                                <option value="500">Medium</option>
+                                <option value="700">Bold</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Photo Styling -->
+                    <div class="style-group">
+                        <h4>Photo Styling</h4>
+                        <div class="control-row">
+                            <label>Border Radius</label>
+                            <input type="range" id="photoBorderRadius" min="0" max="50" value="0" oninput="updatePhotoStyle()">
+                            <span id="photoBorderRadiusValue">0%</span>
+                        </div>
+                        <div class="control-row">
+                            <label>Border Width</label>
+                            <input type="range" id="photoBorderWidth" min="0" max="10" value="0" oninput="updatePhotoStyle()">
+                            <span id="photoBorderWidthValue">0px</span>
+                        </div>
+                        <div class="control-row">
+                            <label>Border Color</label>
+                            <input type="color" id="photoBorderColor" value="#004d73" oninput="updatePhotoStyle()">
+                        </div>
+                        <div class="control-row">
+                            <label>Shadow</label>
+                            <input type="checkbox" id="photoShadow" onchange="updatePhotoStyle()">
+                        </div>
+                    </div>
+
+                    <!-- QR Code Styling -->
+                    <div class="style-group">
+                        <h4>QR Code Styling</h4>
+                        <div class="control-row">
+                            <label>Size</label>
+                            <input type="range" id="qrCodeSize" min="60" max="120" value="80" oninput="updateQRStyle()">
+                            <span id="qrCodeSizeValue">80px</span>
+                        </div>
+                    </div>
+
+                    <!-- Element Visibility -->
+                    <div class="style-group">
+                        <h4>Element Visibility</h4>
+                        <div class="visibility-toggles">
+                            <label class="toggle-label">
+                                <input type="checkbox" id="showPhoto" checked onchange="toggleElementVisibility('photo')">
+                                <span>Photo</span>
+                            </label>
+                            <label class="toggle-label">
+                                <input type="checkbox" id="showName" checked onchange="toggleElementVisibility('name')">
+                                <span>Name</span>
+                            </label>
+                            <label class="toggle-label">
+                                <input type="checkbox" id="showDesignation" checked onchange="toggleElementVisibility('designation')">
+                                <span>Designation</span>
+                            </label>
+                            <label class="toggle-label">
+                                <input type="checkbox" id="showId" checked onchange="toggleElementVisibility('id')">
+                                <span>ID Number</span>
+                            </label>
+                            <label class="toggle-label">
+                                <input type="checkbox" id="showPhone" checked onchange="toggleElementVisibility('phone')">
+                                <span>Phone</span>
+                            </label>
+                            <label class="toggle-label">
+                                <input type="checkbox" id="showBlood" checked onchange="toggleElementVisibility('blood')">
+                                <span>Blood Group</span>
+                            </label>
+                            <label class="toggle-label">
+                                <input type="checkbox" id="showEmail" checked onchange="toggleElementVisibility('email')">
+                                <span>Email</span>
+                            </label>
+                            <label class="toggle-label">
+                                <input type="checkbox" id="showQrcode" checked onchange="toggleElementVisibility('qrcode')">
+                                <span>QR Code</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="style-group">
+                        <h4>Actions</h4>
+                        <div class="action-buttons">
+                            <button type="button" onclick="resetPositions()" class="action-btn reset-btn">↺ Reset Positions</button>
+                            <button type="button" onclick="resetStyles()" class="action-btn reset-btn">🔄 Reset Styles</button>
+                            <button type="button" onclick="saveLayout()" class="action-btn save-btn">💾 Save Layout</button>
+                            <button type="button" onclick="loadLayout()" class="action-btn load-btn">📂 Load Layout</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="button-group">
                 <button onclick="toggleDragMode()" id="dragModeBtn">Enable Drag Mode</button>
                 <button onclick="generateCard()">Generate ID Card</button>

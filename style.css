@@ -442,6 +442,232 @@ body {
     }
 }
 
+/* Style Controls Section */
+.style-controls-section {
+    margin-top: 20px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.section-toggle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    background: linear-gradient(135deg, #00a8cc, #0091b5);
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+    transition: background 0.3s;
+}
+
+.section-toggle:hover {
+    background: linear-gradient(135deg, #0091b5, #007a99);
+}
+
+#toggleIcon {
+    transition: transform 0.3s;
+}
+
+.style-controls-content {
+    padding: 15px;
+    background: #f8f9fa;
+    max-height: 400px;
+    overflow-y: auto;
+    display: block;
+}
+
+.style-controls-content.collapsed {
+    display: none;
+}
+
+.style-group {
+    background: white;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.style-group:last-child {
+    margin-bottom: 0;
+}
+
+.style-group h4 {
+    color: #00a8cc;
+    font-size: 14px;
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.control-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    gap: 10px;
+}
+
+.control-row:last-child {
+    margin-bottom: 0;
+}
+
+.control-row label {
+    min-width: 100px;
+    font-size: 12px;
+    color: #555;
+}
+
+.control-row input[type="range"] {
+    flex: 1;
+    height: 6px;
+    -webkit-appearance: none;
+    background: #e0e0e0;
+    border-radius: 3px;
+    outline: none;
+}
+
+.control-row input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    background: #00a8cc;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.control-row input[type="range"]::-webkit-slider-thumb:hover {
+    background: #0091b5;
+}
+
+.control-row input[type="color"] {
+    width: 40px;
+    height: 30px;
+    border: 2px solid #e0e0e0;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 0;
+}
+
+.control-row input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: #00a8cc;
+}
+
+.control-row select {
+    flex: 1;
+    padding: 6px 10px;
+    border: 2px solid #e0e0e0;
+    border-radius: 5px;
+    font-size: 12px;
+    background: white;
+    cursor: pointer;
+}
+
+.control-row select:focus {
+    outline: none;
+    border-color: #00a8cc;
+}
+
+.control-row span:last-child {
+    min-width: 40px;
+    font-size: 11px;
+    color: #888;
+    text-align: right;
+}
+
+/* Visibility Toggles */
+.visibility-toggles {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.toggle-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 12px;
+    color: #555;
+    padding: 5px 8px;
+    border-radius: 5px;
+    background: #f0f0f0;
+    transition: background 0.2s;
+}
+
+.toggle-label:hover {
+    background: #e0e0e0;
+}
+
+.toggle-label input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: #00a8cc;
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.action-btn {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.action-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+}
+
+.reset-btn {
+    background: linear-gradient(135deg, #ff9800, #f57c00);
+    color: white;
+}
+
+.save-btn {
+    background: linear-gradient(135deg, #4caf50, #388e3c);
+    color: white;
+}
+
+.load-btn {
+    background: linear-gradient(135deg, #2196f3, #1976d2);
+    color: white;
+}
+
+/* Custom Scrollbar for Style Controls */
+.style-controls-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.style-controls-content::-webkit-scrollbar-track {
+    background: #f0f0f0;
+    border-radius: 3px;
+}
+
+.style-controls-content::-webkit-scrollbar-thumb {
+    background: #00a8cc;
+    border-radius: 3px;
+}
+
+.style-controls-content::-webkit-scrollbar-thumb:hover {
+    background: #0091b5;
+}
+
 /* Print Styles */
 @media print {
     body {
